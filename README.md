@@ -1,6 +1,6 @@
 # Product API
 
-This is a simple Product API built with Node.js and Sequelize. It supports basic CRUD operations and is designed to be tested using Mocha and Chai.
+This is a simple Product API built with Node.js and Sequelize. It supports basic CRUD operations and is designed to be tested using Mocha, Sinon and Chai.
 
 ## Getting Started
 
@@ -36,11 +36,14 @@ Caching has also been implemented for the /most-viewed api. Caching is provieded
     CURRENCY_API_KEY={CURRENCY_API_KEY}  
 
 3. Install dependencies
-  npm install
+  ```bash
+     npm install
 4. Start the server
+  ```bash
   npm start or nodemon server.js
 
 
 ### Running tests
-npm test
+  ```bash
+  npm test
 
