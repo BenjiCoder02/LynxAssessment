@@ -1,31 +1,50 @@
 const { Op } = require("sequelize");
 const Product = require("../models/product");
 const ProductDTO = require("../models/productDTO/productDTO");
+const cachingService = require("./cachingService");
+const CACHE_KEYS = require("../config/cachekeys");
 
 const DEFAULT_CURRENCY = 'USD';
 const CURRENCY_ENDPOINT = 'https://api.currencylayer.com/convert?access_key={API_KEY}&from={fromCurr}&to={toCurr}&amount={price}';
-const SUPPORTED_CURRENCIES = ['USD', 'CAD']
+const SUPPORTED_CURRENCIES = ['USD', 'CAD'];
+
 
 const productService = {
 
   findProductById: async (id) => {
+
     return await Product.findOne({ where: { id: parseInt(id) } });
   },
 
   findAllByViewCount: async (maxResults) => {
-    return await Product.findAll({
+    const cacheData = cachingService.getCacheWithKey(CACHE_KEYS.MOST_VIEWED);
+
+    if (cacheData) {
+      return cacheData;
+    }
+
+    const mostViewedProducts = await Product.findAll({
       where: { productViewed: { [Op.gt]: 0 } }, // Only products with views
       order: [['productViewed', 'DESC']],
       limit: maxResults,
     });
+    cachingService.setCacheWithKey(CACHE_KEYS.MOST_VIEWED, mostViewedProducts);
+
+    return mostViewedProducts;
   },
 
   incrementViewCount: async (product) => {
+    // Clear most-viewed cache since we are updating the view count to prevent stale data being served
+    cachingService.evictCache(CACHE_KEYS.MOST_VIEWED);
     product.productViewed += 1;
     await product.save();
   },
 
   convertCurrency: async (product, currency) => {
+    if (currency === DEFAULT_CURRENCY) {
+      return Promise.resolve(product);
+    }
+
     try {
       const currencyResponse = await fetch(
         productService.getFormattedCurrencyConvertEndpoint(DEFAULT_CURRENCY, currency, product.price)
@@ -37,9 +56,13 @@ const productService = {
 
       const currencyData = await currencyResponse.json();
       product.price = currencyData?.result || product.price; // Fallback to original price if conversion fails
+
+      return Promise.resolve(product);
     } catch (currencyErr) {
 
       console.error('Currency conversion failed:', currencyErr);
+
+      return Promise.reject(currencyErr);
     }
   },
 

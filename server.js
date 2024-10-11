@@ -1,11 +1,17 @@
 const Hapi = require('@hapi/hapi');
 const sequelize = require('./src/config/db');
 const routes = require('./src/routes');
+const rateLimitPlugin = require('hapi-rate-limit');
 
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 3000,
     host: process.env.HOST || 'localhost',
+  });
+
+  //Register plugins
+  await server.register({
+    plugin: rateLimitPlugin,
   });
 
   // Register routes

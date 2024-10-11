@@ -12,6 +12,14 @@ To run this API, follow the steps below:
 - MySQL 
 - npm (Node Package Manager)
 
+### Details
+This is secured with rate limits and parameter validation. 
+Rate limit is provided by hapi-rate-limit (https://www.npmjs.com/package/hapi-rate-limit)
+
+### Caching
+Caching has also been implemented for the /most-viewed api. Caching is provieded by the node-cache package
+(https://www.npmjs.com/package/node-cache)
+
 ### Installation
 
 1. Clone the repository:
@@ -31,6 +39,7 @@ To run this API, follow the steps below:
   npm install
 4. Start the server
   npm start or nodemon server.js
+
 
 ### Running tests
 npm test

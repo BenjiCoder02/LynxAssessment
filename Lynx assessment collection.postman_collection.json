@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "9f9a904f-cfba-43cb-8457-c79a4213d302",
+		"name": "Lynx assessment collection",
+		"description": "### Default Project local Url: http://localhost:3000  \nEndpoints\n\n#### 1\\. Get a Single Product\n\n- **Method:** `GET`\n    \n- **Endpoint:** `/api/v1/products/:id`\n    \n- **Description:** Retrieves a single product by ID and increments the view count.\n    \n- **Parameters:**\n    \n    - `id` (path parameter): The ID of the product (required).\n        \n    - `currency` (query parameter): Optional. The currency for the price conversion. Accepted values: `USD`, `CAD`.\n        \n- **Response:**\n    \n    - **200 OK**\n        \n\n**Body:  \n  \n**\n\n``` json\n{\n  \"id\": 1,\n  \"name\": \"Kawasaki Ninja 650\",\n  \"price\": 10.5,\n  \"description\": null,\n  \"isDeleted\": 0,\n  \"productViewed\": 1,\n  \"createdDate\": \"2023-10-10T00:00:00.000Z\",\n  \"updatedDate\": \"2023-10-10T00:00:00.000Z\"\n}\n\n ```\n\n**400 Bad Request**\n\n- If the ID is missing or if the currency is invalid.\n    \n- **Body:**\n    \n\n``` json\n{\n  \"error\": \"ID is required\"\n}\n\n\n ```\n\n**404 Not Found**\n\n- If the product does not exist.\n    \n- **Body:**\n    \n\n``` json\n{\n  \"error\": \"Product not found\"\n}\n\n\n ```\n\n#### 2\\. List Most Viewed Products\n\n- **Method:** `GET`\n    \n- **Endpoint:** `/api/v1/products/most-viewed`\n    \n- **Description:** Retrieves the top most viewed products.\n    \n- **Parameters:**\n    \n    - `limit` (query parameter): Optional. The number of products to return (default is 5).\n        \n    - `currency` (query parameter): Optional. The currency for the price conversion. Accepted values: `USD`, `CAD`.\n        \n- **Response:**\n    \n    - **200 OK**\n        \n        - **Body:**\n            \n\n``` json\n[\n  {\n    \"id\": 1,\n    \"name\": \"Kawasaki Ninja 650\",\n    \"price\": 10.5,\n    \"productViewed\": 5\n  },\n  ...\n]\n\n\n ```\n\n**400 Bad Request**\n\n- If the limit is not a number or integer\n    \n- **Body:**\n    \n\n``` json\n{\n  \"error\": \"limit must be a positive integer.\"\n}\n\n ```",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38956096"
+	},
+	"item": [
+		{
+			"name": "Get product without specific currency",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/v1/products/1"
+			},
+			"response": []
+		},
+		{
+			"name": "GET product with specific currency  - available options (CAD, USD)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/products/1?currency=CAD",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"1"
+					],
+					"query": [
+						{
+							"key": "currency",
+							"value": "CAD"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET most viewed products without specific currency",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/v1/products/most-viewed"
+			},
+			"response": []
+		},
+		{
+			"name": "GET most viewed products with currency conversion - available options (USD, CAD)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/products/most-viewed?currency=USD",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"most-viewed"
+					],
+					"query": [
+						{
+							"key": "currency",
+							"value": "USD"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
