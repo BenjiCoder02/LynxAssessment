@@ -5,6 +5,7 @@ import Product from '../src/models/product.js';
 import ProductDTO from '../src/models/productDTO/productDTO.js';
 import cachingService from '../src/services/cachingService.js';
 import CACHE_KEYS from '../src/config/cachekeys.js';
+import currencyConversionService from '../src/services/currencyConversionService.js';
 
 
 const date = new Date();
@@ -93,7 +94,7 @@ describe('Product Service - convertCurrency', () => {
       json: () => Promise.resolve({ result: 100 }),
     });
 
-    await productService.convertCurrency(product, 'USD');
+    await currencyConversionService.convertCurrency(product, 'USD');
     expect(product.price).to.equal(100);
   });
 
@@ -102,7 +103,7 @@ describe('Product Service - convertCurrency', () => {
     sinon.stub(global, 'fetch').resolves({ ok: false }); // Simulate a failed API request
 
     try {
-      await productService.convertCurrency(product, 'USD');
+      await currencyConversionService.convertCurrency(product, 'USD');
     } catch (err) {
       expect(err.message).to.equal('Failed to fetch currency data'); // Check the error message
     }
@@ -121,7 +122,7 @@ describe('Product Service - getProduct', () => {
   it('should return a product DTO when product is found', async () => {
     sinon.stub(productService, 'findProductById').resolves(product);
     sinon.stub(productService, 'incrementViewCount').resolves();
-    sinon.stub(productService, 'convertCurrency').resolves();  // Stub convertCurrency to prevent it from running
+    sinon.stub(currencyConversionService, 'convertCurrency').resolves();  // Stub convertCurrency to prevent it from running
     sinon.stub(ProductDTO, 'call').returns(expectedProductDTO);
 
     const result = await productService.getProduct(1, 'USD', { response: () => ({ code: () => { } }) });
